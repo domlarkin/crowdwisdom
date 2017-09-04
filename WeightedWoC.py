@@ -780,6 +780,7 @@ wisdomTime = crowd_stopTime - crowd_startTime
 avgGaTime = round((sum(gaTimes)/len(gaTimes)),3)
 
 #******************* Data Logging *****************************************
+#**** All relevant data should be saved to file for analysis later ********
 print ("Avg GA = ",meanGaCost)
 print ("Best GA = ",round(bestGaCost,3))
 print ("Unweighted = ",round(bestUnwPathCost,3),bestUnwExpertNum)
@@ -792,7 +793,7 @@ print ("Avg GA Agent Time = ",round(avgGaTime,3))
 print ("Group GA Time = ",round(groupGAtime,3))
 print ("WoC Time = ",round(wisdomTime,3))
         
-outFilename = '../Data/gaDataCummulative_'+timeNow+'.txt' #Build a filename with current date time to seconds accuracy
+outFilename = 'Data/gaDataCummulative_'+timeNow+'.txt' #Build a filename with current date time to seconds accuracy
 with open(outFilename, 'w') as f: #store Cummualitive results for all GAs in a file.   
         outString = 'numOfCities:'+str(numOfCities)
         write_data = f.write(outString+'\n')  
