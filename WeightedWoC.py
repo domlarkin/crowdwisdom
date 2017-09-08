@@ -584,7 +584,8 @@ def genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,wocPath,expWocPath,
     plt.plot(meanGa, 'r--',linewidth = 3.0,label='Avg. GA Cost')
     plt.plot(wise, 'b-.',linewidth = 4.0,label='Best WoAC Cost')
     plt.legend(prop={'size':8})
-    plt.suptitle('44 Node TSP - Results of 30 GA Searches', fontsize=14, fontweight='bold')
+    supTitleLabel = str(cityCount)+' Node TSP with ' + str(expertNum) + ' Experts'
+    plt.suptitle(supTitleLabel, fontsize=14, fontweight='bold')
     plt.title('Cost of Best GA Pop. Members per Search & Generation')
     plt.xlabel('Generation Number')
     plt.ylabel('Cost')
@@ -609,7 +610,8 @@ def genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,wocPath,expWocPath,
     ax2.legend(loc='upper center',prop={'size':8}, bbox_to_anchor=(0.5, -0.1),
         fancybox=True, shadow=True, ncol=5)
     #plt.legend()
-    plt.suptitle('44 Node TSP', fontsize=14, fontweight='bold')
+    supTitleLabel = str(cityCount)+' Node TSP with ' + str(expertNum) + ' Experts'
+    plt.suptitle(supTitleLabel, fontsize=14, fontweight='bold')
     plt.title('Best GA Path and WoAC Aggregration Paths')
     #plt.text(0.35,0.9, 'Best GA Path Cost = '+str(bestGaCost) , transform=ax2.transAxes,bbox=dict(facecolor='red', alpha=0.5),va='top')
     #plt.text(0.35,0.85, 'Avg. GA Path Cost = '+str(meanGaCost) , transform=ax2.transAxes,bbox=dict(facecolor='red', alpha=0.5),va='top')
@@ -652,7 +654,8 @@ def genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,wocPath,expWocPath,
     textYloc = min(yGaCoords)
     fig2 = plt.plot(xGaCoords,yGaCoords,'ro--',linewidth=3.0,label='Best GA (out of 30)')
     plt.legend(prop={'size':8})
-    plt.suptitle('44 Node TSP', fontsize=14, fontweight='bold')
+    supTitleLabel = str(cityCount)+' Node TSP with ' + str(expertNum) + ' Experts'
+    plt.suptitle(supTitleLabel, fontsize=14, fontweight='bold')
     plt.title('Best GA Path')
     plt.xlabel('x Coordinate')
     plt.ylabel('y Coordinate')
@@ -678,7 +681,8 @@ def genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,wocPath,expWocPath,
     textYloc = min(yExpWiseCoords)
     fig2 = plt.plot(xExpWiseCoords,yExpWiseCoords, 'bo-',label='44 Nodes')
     plt.legend(prop={'size':8})
-    plt.suptitle('222 Node TSP', fontsize=14, fontweight='bold')
+    supTitleLabel = str(cityCount)+' Node TSP with ' + str(expertNum) + ' Experts'
+    plt.suptitle(supTitleLabel, fontsize=14, fontweight='bold')
     plt.title('WoAC - Exp. Weighted Path')
     plt.xlabel('x Coordinate')
     plt.ylabel('y Coordinate')
@@ -689,7 +693,8 @@ def genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,wocPath,expWocPath,
     textYloc = min(yPercWiseCoords)
     fig2 = plt.plot(xPercWiseCoords,yPercWiseCoords, 'bo-',label='44 Nodes')
     plt.legend(prop={'size':8})
-    plt.suptitle('44 Node TSP', fontsize=14, fontweight='bold')
+    supTitleLabel = str(cityCount)+' Node TSP with ' + str(expertNum) + ' Experts'
+    plt.suptitle(supTitleLabel, fontsize=14, fontweight='bold')
     plt.title('WoAC - Percentage Weighted Path')
     plt.xlabel('x Coordinate')
     plt.ylabel('y Coordinate')
@@ -706,7 +711,8 @@ def genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,wocPath,expWocPath,
            loc='lower left',
            ncol=3,
            fontsize=8)
-    plt.suptitle('222 Node TSP - 30 Independent GA Searches', fontsize=14, fontweight='bold')
+    supTitleLabel = str(cityCount)+' Node TSP with ' + str(expertNum) + ' Experts'
+    plt.suptitle(supTitleLabel, fontsize=14, fontweight='bold')
     plt.title('Weight Distribution of Individual GA Outcomes')
     plt.xlabel('Number of GA Outcomes')
     plt.ylabel('Weight of GA Outcome')
@@ -727,7 +733,7 @@ else:
     cityCount = 22
 fileName = 'Random'+str(cityCount)+'.tsp'
 popSize = 20 #population size
-expertNum = 30 # number of ga's that will be considered in 'Wisdom of Crowd' analysis
+expertNum = 100 # number of ga's that will be considered in 'Wisdom of Crowd' analysis
 gaTimes = [] #list to hold each ga time
 gaPaths = [] #list to hold all the 'expert' ga paths
 gaCosts = [] #list to hold the cost of each ga path
@@ -793,7 +799,7 @@ print ("Avg GA Agent Time = ",round(avgGaTime,3))
 print ("Group GA Time = ",round(groupGAtime,3))
 print ("WoC Time = ",round(wisdomTime,3))
         
-outFilename = 'Data/gaDataCummulative_'+timeNow+'.txt' #Build a filename with current date time to seconds accuracy
+outFilename = 'Data/gaData_'+str(cityCount)+'Cities_'+timeNow+'.txt' #Build a filename with current date time to seconds accuracy
 with open(outFilename, 'w') as f: #store Cummualitive results for all GAs in a file.   
         outString = 'numOfCities:'+str(numOfCities)
         write_data = f.write(outString+'\n')  
