@@ -723,132 +723,133 @@ def genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,wocPath,expWocPath,
 #************** End - Tour Plotter ************************************************************
 
 #******************* Start - Main *****************************************
-#initialize variables
-filename = ''
-cityCount = 0
-print("argv count",len(sys.argv),sys.argv)
-if (len(sys.argv)>1):
-    cityCount = sys.argv[1]
-else:
-    cityCount = 22
-fileName = 'Random'+str(cityCount)+'.tsp'
-popSize = 20 #population size
-expertNum = 100 # number of ga's that will be considered in 'Wisdom of Crowd' analysis
-gaTimes = [] #list to hold each ga time
-gaPaths = [] #list to hold all the 'expert' ga paths
-gaCosts = [] #list to hold the cost of each ga path
-genCosts = [] #list to hold each array of cost per generation (iteration)
-edges = []
-edgesUsage = []
+if __name__ == "__main__":
+    #initialize variables
+    filename = ''
+    cityCount = 0
+    print("argv count",len(sys.argv),sys.argv)
+    if (len(sys.argv)>1):
+        cityCount = sys.argv[1]
+    else:
+        cityCount = 22
+    fileName = 'Random'+str(cityCount)+'.tsp'
+    popSize = 20 #population size
+    expertNum = 100 # number of ga's that will be considered in 'Wisdom of Crowd' analysis
+    gaTimes = [] #list to hold each ga time
+    gaPaths = [] #list to hold all the 'expert' ga paths
+    gaCosts = [] #list to hold the cost of each ga path
+    genCosts = [] #list to hold each array of cost per generation (iteration)
+    edges = []
+    edgesUsage = []
 
-cities,cityCoords,numOfCities = readFile(fileName) #read text-file and get arrays with cities & coordinates
-dist = calcAllDistances(numOfCities,cityCoords) # setup distance matrix for quick look-up table access
+    cities,cityCoords,numOfCities = readFile(fileName) #read text-file and get arrays with cities & coordinates
+    dist = calcAllDistances(numOfCities,cityCoords) # setup distance matrix for quick look-up table access
 
-groupGA_startTime = time.clock() #timer for tracking time to create group of experts
+    groupGA_startTime = time.clock() #timer for tracking time to create group of experts
 
-for i in range(0,expertNum): # perform multiple GA iterations to obtain different tours    
-    # Start Genetric Algorithm
-    startTime = time.clock()
-    population = genRandomPop(numOfCities,popSize) #generate random population pool w/ size = "popSize" initialized above
-    gaPath,gaCost,genCost = gaTSP(population,numOfCities) #perform genetic algorithm using population;
-    singleGA_stopTime = time.clock() #ending time for single GA
-    singleGAtime = singleGA_stopTime - startTime
-    gaTimes.append(singleGAtime)
-    #returns best path, its cost, and the cost of each generation
-    gaPaths.append(gaPath) #store ga path
-    gaCosts.append(gaCost) #store ga path cost
-    genCosts.append(genCost) #store the array of costs per generation
-    print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
-    print ("singleGAtime",singleGAtime)
-    print ("gaPath",gaPath)
-    print ("gaCost",gaCost)
-    #print ("genCost",genCost)
+    for i in range(0,expertNum): # perform multiple GA iterations to obtain different tours    
+        # Start Genetric Algorithm
+        startTime = time.clock()
+        population = genRandomPop(numOfCities,popSize) #generate random population pool w/ size = "popSize" initialized above
+        gaPath,gaCost,genCost = gaTSP(population,numOfCities) #perform genetic algorithm using population;
+        singleGA_stopTime = time.clock() #ending time for single GA
+        singleGAtime = singleGA_stopTime - startTime
+        gaTimes.append(singleGAtime)
+        #returns best path, its cost, and the cost of each generation
+        gaPaths.append(gaPath) #store ga path
+        gaCosts.append(gaCost) #store ga path cost
+        genCosts.append(genCost) #store the array of costs per generation
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
+        print ("singleGAtime",singleGAtime)
+        print ("gaPath",gaPath)
+        print ("gaCost",gaCost)
+        #print ("genCost",genCost)
 
-#finished completed the group of GA searches        
-groupGA_stopTime = time.clock() #ending time for group of 'expert GAs'
-timeNow = time.strftime("%Y%m%d_%H%M%S")
+    #finished completed the group of GA searches        
+    groupGA_stopTime = time.clock() #ending time for group of 'expert GAs'
+    timeNow = time.strftime("%Y%m%d_%H%M%S")
 
-#########  DML calling functions for eges
-edges, edgesUsage = calcEdgeUsage(cityCoords,gaPaths)
-drawEdgeUsage(cityCoords,edges, edgesUsage)
-##=========================================
-  
-#Start "Wisdom of Crowds" Analysis
-crowd_startTime = time.clock()
-bestUnwPathCost,bestUnwExpertNum,bestUnwPath,bestExpPathCost,bestExpExpertNum,bestExpPath,bestPercPathCost,bestPercExpertNum,bestPercPath,percWeightOfExperts,expWeightOfExperts,lastUnwCost,lastExpCost,lastPercCost = buildWeightedWocHistograms(gaPaths,gaCosts,numOfCities)
-crowd_stopTime = time.clock() #ending time to perform WoC 
-bestGaCost = round(min(gaCosts),3)
-meanGaCost = round((sum(gaCosts)/len(gaCosts)),3)
+    #########  DML calling functions for eges
+    edges, edgesUsage = calcEdgeUsage(cityCoords,gaPaths)
+    drawEdgeUsage(cityCoords,edges, edgesUsage)
+    ##=========================================
+      
+    #Start "Wisdom of Crowds" Analysis
+    crowd_startTime = time.clock()
+    bestUnwPathCost,bestUnwExpertNum,bestUnwPath,bestExpPathCost,bestExpExpertNum,bestExpPath,bestPercPathCost,bestPercExpertNum,bestPercPath,percWeightOfExperts,expWeightOfExperts,lastUnwCost,lastExpCost,lastPercCost = buildWeightedWocHistograms(gaPaths,gaCosts,numOfCities)
+    crowd_stopTime = time.clock() #ending time to perform WoC 
+    bestGaCost = round(min(gaCosts),3)
+    meanGaCost = round((sum(gaCosts)/len(gaCosts)),3)
 
-#Calculate ending Times
-groupGAtime = groupGA_stopTime - groupGA_startTime
-wisdomTime = crowd_stopTime - crowd_startTime
-avgGaTime = round((sum(gaTimes)/len(gaTimes)),3)
+    #Calculate ending Times
+    groupGAtime = groupGA_stopTime - groupGA_startTime
+    wisdomTime = crowd_stopTime - crowd_startTime
+    avgGaTime = round((sum(gaTimes)/len(gaTimes)),3)
 
-#******************* Data Logging *****************************************
-#**** All relevant data should be saved to file for analysis later ********
-print ("Avg GA = ",meanGaCost)
-print ("Best GA = ",round(bestGaCost,3))
-print ("Unweighted = ",round(bestUnwPathCost,3),bestUnwExpertNum)
-print ("Last Unweighted = ", round(lastUnwCost,3))
-print ("Exp Weighted = ",round(bestExpPathCost,3),bestExpExpertNum)
-print ("Last Exp = ", round(lastExpCost,3))
-print ("Percent Weighted = ",round(bestPercPathCost,3),bestPercExpertNum)
-print ("Last Percent = ", round(lastPercCost,3))
-print ("Avg GA Agent Time = ",round(avgGaTime,3))
-print ("Group GA Time = ",round(groupGAtime,3))
-print ("WoC Time = ",round(wisdomTime,3))
-        
-outFilename = 'Data/gaData_'+str(cityCount)+'Cities_'+timeNow+'.txt' #Build a filename with current date time to seconds accuracy
-with open(outFilename, 'w') as f: #store Cummualitive results for all GAs in a file.   
-        outString = 'numOfCities:'+str(numOfCities)
-        write_data = f.write(outString+'\n')  
-        outString = 'gaPaths:'+str(gaPaths)
-        write_data = f.write(outString+'\n')  
-        outString = 'gaCosts:'+str(gaCosts)
-        write_data = f.write(outString+'\n') 
-        outString = 'genCosts:'+str(genCosts)
-        write_data = f.write(outString+'\n')  
-        outString = 'bestUnwPath:'+str(bestUnwPath)
-        write_data = f.write(outString+'\n')  
-        outString = 'bestExpPath:'+str(bestExpPath)
-        write_data = f.write(outString+'\n')  
-        outString = 'bestPercPath:'+str(bestPercPath)
-        write_data = f.write(outString+'\n')  
-        outString = 'expWeightOfExperts:'+str(expWeightOfExperts)
-        write_data = f.write(outString+'\n')  
-        outString = 'percWeightOfExperts:'+str(percWeightOfExperts)
-        write_data = f.write(outString+'\n')  
-        outString = 'cityCoords:'+str(cityCoords)
-        write_data = f.write(outString+'\n')        
-        outString = 'edges:'+str(edges)
-        write_data = f.write(outString+'\n')        
-        outString = 'edgesUsage:'+str(edgesUsage)
-        write_data = f.write(outString+'\n')        
-        outString = 'Avg GA:'+str(meanGaCost)
-        write_data = f.write(outString+'\n')        
-        outString = 'Best GA:'+str(round(bestGaCost,3))
-        write_data = f.write(outString+'\n')        
-        outString = 'Unweighted:'+str(round(bestUnwPathCost,3))+","+str(bestUnwExpertNum)
-        write_data = f.write(outString+'\n')        
-        outString = 'Last Unweighted:'+str(round(lastUnwCost,3))
-        write_data = f.write(outString+'\n')        
-        outString = 'Exp Weighted:'+str(round(bestExpPathCost,3))+","+str(bestExpExpertNum)
-        write_data = f.write(outString+'\n')        
-        outString = 'Last Exp:'+str(round(lastExpCost,3))
-        write_data = f.write(outString+'\n')         
-        outString = 'Percent Weighted:'+str(round(bestPercPathCost,3))+","+str(bestPercExpertNum)
-        write_data = f.write(outString+'\n')         
-        outString = 'Last Percent:'+str(round(lastPercCost,3))
-        write_data = f.write(outString+'\n')
-        outString = 'Avg GA Agent Time:'+str(round(avgGaTime,3))
-        write_data = f.write(outString+'\n')  
-        outString = 'Group GA Time:'+str(round(groupGAtime,3))
-        write_data = f.write(outString+'\n')  
-        outString = 'WoC Time:'+str(round(wisdomTime,3))
-        write_data = f.write(outString+'\n')  
+    #******************* Data Logging *****************************************
+    #**** All relevant data should be saved to file for analysis later ********
+    print ("Avg GA = ",meanGaCost)
+    print ("Best GA = ",round(bestGaCost,3))
+    print ("Unweighted = ",round(bestUnwPathCost,3),bestUnwExpertNum)
+    print ("Last Unweighted = ", round(lastUnwCost,3))
+    print ("Exp Weighted = ",round(bestExpPathCost,3),bestExpExpertNum)
+    print ("Last Exp = ", round(lastExpCost,3))
+    print ("Percent Weighted = ",round(bestPercPathCost,3),bestPercExpertNum)
+    print ("Last Percent = ", round(lastPercCost,3))
+    print ("Avg GA Agent Time = ",round(avgGaTime,3))
+    print ("Group GA Time = ",round(groupGAtime,3))
+    print ("WoC Time = ",round(wisdomTime,3))
+            
+    outFilename = 'Data/gaData_'+str(cityCount)+'Cities_'+timeNow+'.txt' #Build a filename with current date time to seconds accuracy
+    with open(outFilename, 'w') as f: #store Cummualitive results for all GAs in a file.   
+            outString = 'numOfCities:'+str(numOfCities)
+            write_data = f.write(outString+'\n')  
+            outString = 'gaPaths:'+str(gaPaths)
+            write_data = f.write(outString+'\n')  
+            outString = 'gaCosts:'+str(gaCosts)
+            write_data = f.write(outString+'\n') 
+            outString = 'genCosts:'+str(genCosts)
+            write_data = f.write(outString+'\n')  
+            outString = 'bestUnwPath:'+str(bestUnwPath)
+            write_data = f.write(outString+'\n')  
+            outString = 'bestExpPath:'+str(bestExpPath)
+            write_data = f.write(outString+'\n')  
+            outString = 'bestPercPath:'+str(bestPercPath)
+            write_data = f.write(outString+'\n')  
+            outString = 'expWeightOfExperts:'+str(expWeightOfExperts)
+            write_data = f.write(outString+'\n')  
+            outString = 'percWeightOfExperts:'+str(percWeightOfExperts)
+            write_data = f.write(outString+'\n')  
+            outString = 'cityCoords:'+str(cityCoords)
+            write_data = f.write(outString+'\n')        
+            outString = 'edges:'+str(edges)
+            write_data = f.write(outString+'\n')        
+            outString = 'edgesUsage:'+str(edgesUsage)
+            write_data = f.write(outString+'\n')        
+            outString = 'Avg GA:'+str(meanGaCost)
+            write_data = f.write(outString+'\n')        
+            outString = 'Best GA:'+str(round(bestGaCost,3))
+            write_data = f.write(outString+'\n')        
+            outString = 'Unweighted:'+str(round(bestUnwPathCost,3))+","+str(bestUnwExpertNum)
+            write_data = f.write(outString+'\n')        
+            outString = 'Last Unweighted:'+str(round(lastUnwCost,3))
+            write_data = f.write(outString+'\n')        
+            outString = 'Exp Weighted:'+str(round(bestExpPathCost,3))+","+str(bestExpExpertNum)
+            write_data = f.write(outString+'\n')        
+            outString = 'Last Exp:'+str(round(lastExpCost,3))
+            write_data = f.write(outString+'\n')         
+            outString = 'Percent Weighted:'+str(round(bestPercPathCost,3))+","+str(bestPercExpertNum)
+            write_data = f.write(outString+'\n')         
+            outString = 'Last Percent:'+str(round(lastPercCost,3))
+            write_data = f.write(outString+'\n')
+            outString = 'Avg GA Agent Time:'+str(round(avgGaTime,3))
+            write_data = f.write(outString+'\n')  
+            outString = 'Group GA Time:'+str(round(groupGAtime,3))
+            write_data = f.write(outString+'\n')  
+            outString = 'WoC Time:'+str(round(wisdomTime,3))
+            write_data = f.write(outString+'\n')  
 
-#prepare plots
-genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,bestUnwPath,bestExpPath,bestPercPath,expWeightOfExperts,percWeightOfExperts,bestUnwPathCost,bestExpPathCost,bestPercPathCost) 
-plt.show()
+    #prepare plots
+    genPlots(cityCoords,numOfCities,gaPaths,gaCosts,genCosts,bestUnwPath,bestExpPath,bestPercPath,expWeightOfExperts,percWeightOfExperts,bestUnwPathCost,bestExpPathCost,bestPercPathCost) 
+    plt.show()
 
